@@ -1,10 +1,10 @@
-// module.exports = {
-//   devServer: {
-//     proxy: {
-//       "/api": {
-//         target: "",
-//         changeOrigin: true
-//       }
-//     }
-//   }
-// };
+module.exports = {
+  devServer: {
+    proxy: {
+      "/api": {
+        target: "",
+        changeOrigin: true
+      }
+    }
+  }
+};
