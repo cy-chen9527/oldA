@@ -23,7 +23,6 @@ export default {
   top: 0;
   .container {
     width: 900px;
-    height: 432px;
     background: rgba(255, 255, 255, 1);
     border-radius: 15px;
     box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);

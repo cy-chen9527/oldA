@@ -6,91 +6,78 @@
     <div class="right-box">
       <h3 class="tit">欢迎登录</h3>
       <a-form
-        layout="inline"
+        id="components-form-demo-normal-login"
         :form="form"
+        class="login-form"
         @submit="handleSubmit"
       >
-        <a-form-item
-          :validate-status="userNameError() ? 'error' : ''"
-          :help="userNameError() || ''"
-        >
+        <a-form-item>
+          <label class="label">账户</label>
           <a-input
             v-decorator="[
           'userName',
-          {rules: [{ required: true, message: 'Please input your username!' }]}
+          { rules: [{ required: true, message: 'Please input your username!' }] }
         ]"
-            placeholder="Username"
+            placeholder="请输入用户名/邮箱"
           >
             <a-icon
               slot="prefix"
               type="user"
-              style="color:rgba(0,0,0,.25)"
-            />
-          </a-input>
-        </a-form-item>
-        <a-form-item
-          :validate-status="passwordError() ? 'error' : ''"
-          :help="passwordError() || ''"
-        >
-          <a-input
-            v-decorator="[
-          'password',
-          {rules: [{ required: true, message: 'Please input your Password!' }]}
-        ]"
-            type="password"
-            placeholder="Password"
-          >
-            <a-icon
-              slot="prefix"
-              type="lock"
-              style="color:rgba(0,0,0,.25)"
+              style="color: rgba(0,0,0,.25)"
             />
           </a-input>
         </a-form-item>
         <a-form-item>
+          <label class="label">密码</label>
+          <a-input
+            v-decorator="[
+          'password',
+          { rules: [{ required: true, message: 'Please input your Password!' }] }
+        ]"
+            type="password"
+            placeholder="请输入密码"
+          >
+            <a-icon
+              slot="prefix"
+              type="lock"
+              style="color: rgba(0,0,0,.25)"
+            />
+          </a-input>
+        </a-form-item>
+        <div class="link-item">
+          <router-link
+            to=""
+            class="forget-pass"
+          >忘记密码？</router-link>
+          <router-link to="/user/enroll">注册账号</router-link>
+        </div>
+        <a-form-item>
           <a-button
             type="primary"
             html-type="submit"
-            :disabled="hasErrors(form.getFieldsError())"
+            class="login-form-button"
           >
             登录
           </a-button>
         </a-form-item>
       </a-form>
-      <router-link to="/user/enroll">注册</router-link>
     </div>
   </div>
 </template>
 
 <script>
-function hasErrors(fieldsError) {
-  return Object.keys(fieldsError).some(field => fieldsError[field]);
-}
 export default {
   name: 'Login',
   data() {
     return {
-      hasErrors,
-      form: this.$form.createForm(this),
     }
   },
+  beforeCreate() {
+    this.form = this.$form.createForm(this);
+  },
   mounted() {
-    this.$nextTick(() => {
-      // To disabled submit button at the beginning.
-      this.form.validateFields();
-    });
   },
   methods: {
-    // Only show error after a field is touched.
-    userNameError() {
-      const { getFieldError, isFieldTouched } = this.form;
-      return isFieldTouched('userName') && getFieldError('userName');
-    },
-    // Only show error after a field is touched.
-    passwordError() {
-      const { getFieldError, isFieldTouched } = this.form;
-      return isFieldTouched('password') && getFieldError('password');
-    },
     handleSubmit(e) {
       e.preventDefault();
       this.form.validateFields((err, values) => {
@@ -108,18 +95,17 @@ export default {
 .login-panel {
   display: flex;
   flex-wrap: wrap;
-  > div {
-    width: 50%;
-  }
   .left-box {
+    width: 55%;
     img {
       display: block;
       width: 66%;
-      margin: 50px auto;
+      margin: 40px auto;
     }
   }
   .right-box {
-    padding: 40px 20px;
+    width: 45%;
+    padding: 40px;
     .tit {
       font-size: 24px;
       position: relative;
@@ -133,6 +119,38 @@ export default {
         left: 0;
         top: 50%;
         transform: translateY(-50%);
+      }
+    }
+    .link-item {
+      width: 90%;
+      padding: 10px 0;
+      display: flex;
+      justify-content: space-between;
+      .forget-pass {
+        color: #999;
+      }
+    }
+    /deep/.ant-form {
+      padding: 12px 0;
+      .label {
+        font-size: 18px;
+      }
+      .ant-form-explain {
+        position: absolute;
+      }
+      .ant-form-item {
+        width: 100%;
+        margin-bottom: 12px;
+        .ant-form-item-control-wrapper {
+          width: 90%;
+        }
+        .ant-input-affix-wrapper {
+          width: 100%;
+        }
+      }
+      .login-form-button {
+        margin-top: 24px;
+        width: 100%;
       }
     }
   }
