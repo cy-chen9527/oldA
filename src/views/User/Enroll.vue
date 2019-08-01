@@ -20,7 +20,7 @@
           }
         ]"
             type="text"
-            placeholder="请输入用户名"
+            placeholder="请输入用户名(3-12个字)"
           > <i
               slot="prefix"
               class="iconfont icon-zhanghu"
@@ -47,8 +47,9 @@
           </a-input>
           <a-button
             class="addonAfter"
-            :type="emailType"
             @click="sendCode"
+            type="primary"
+            :disabled="sendBUttonType"
           >{{sendTxt}}</a-button>
         </a-form-item>
         <a-form-item>
@@ -93,7 +94,7 @@
         <a-form-item>
           <a-input
             v-decorator="[
-          'secCode',
+          'code',
           {
             rules: [{
               required: true, message: '请输入验证码!',
@@ -130,8 +131,8 @@ export default {
   name: 'Login',
   data() {
     return {
-      emailType: 'primary',
-      sendTxt: '发送验证码'
+      sendTxt: '发送验证码',
+      sendBUttonType: false
     }
   },
   beforeCreate() {
@@ -163,21 +164,33 @@ export default {
       e.preventDefault();
       this.form.validateFields((err, values) => {
         if (!err) {
-          console.log('Received values of form: ', values);
+          this.axios.post('/api/users/v1/register', values)
+            .then(res => {
+              this.$message.success(res.data.message)
+              this.$router.push('/user/login')
+            })
+            .catch(error => {
+              console.log(error.response)
+              this.$message.error(error.response.data.message)
+            })
         }
       });
     },
     sendCode() {
+      this.sendBUttonType = true
       const form = this.form;
+      const that = this
       form.validateFields(['email', 'username'], (errors, values) => {
         if (!errors) {
           this.axios.post('/api/users/v1/sendRegCode', values)
-            .then(function (res) {
-              console.log(res);
+            .then(res => {
+              this.sendTxt = '验证码已发送'
+              this.$message.success(res.data.message + '请至邮箱查看')
             })
-            .catch(function (error) {
-              console.log('发送失败');
-            });
+            .catch(error => {
+              this.sendBUttonType = false
+              this.$message.error(error.response.data.message)
+            })
         }
       });
     }

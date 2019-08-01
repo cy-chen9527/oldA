@@ -126,6 +126,7 @@ Vue.use(Skeleton);
 Vue.use(Comment);
 Vue.use(ConfigProvider);
 
+axios.defaults.baseURL = "/api";
 Vue.prototype.axios = axios;
 
 Vue.config.productionTip = false;
