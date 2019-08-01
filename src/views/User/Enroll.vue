@@ -9,6 +9,23 @@
         :form="form"
         @submit="handleSubmit"
       >
+        <a-form-item>
+          <a-input
+            v-decorator="[
+          'username',
+          {
+            rules: [{
+              required: true, message: '请输入用户名(3-12个字)!',max:12,min:3,
+            }],
+          }
+        ]"
+            type="text"
+            placeholder="请输入用户名"
+          > <i
+              slot="prefix"
+              class="iconfont icon-zhanghu"
+            ></i></a-input>
+        </a-form-item>
         <a-form-item class="email-item">
           <a-input
             v-decorator="[
@@ -31,26 +48,9 @@
           <a-button
             class="addonAfter"
             :type="emailType"
-          >{{sendCode}}</a-button>
+            @click="sendCode"
+          >{{sendTxt}}</a-button>
         </a-form-item>
-        <a-form-item>
-          <a-input
-            v-decorator="[
-          'username',
-          {
-            rules: [{
-              required: true, message: '请输入用户名!',
-            }],
-          }
-        ]"
-            type="text"
-            placeholder="请输入用户名"
-          > <i
-              slot="prefix"
-              class="iconfont icon-zhanghu"
-            ></i></a-input>
-        </a-form-item>
-
         <a-form-item>
           <a-input
             v-decorator="[
@@ -131,7 +131,7 @@ export default {
   data() {
     return {
       emailType: 'primary',
-      sendCode: '发送验证码'
+      sendTxt: '发送验证码'
     }
   },
   beforeCreate() {
@@ -167,8 +167,21 @@ export default {
         }
       });
     },
+    sendCode() {
+      const form = this.form;
+      form.validateFields(['email', 'username'], (errors, values) => {
+        if (!errors) {
+          this.axios.post('/api/users/v1/sendRegCode', values)
+            .then(function (res) {
+              console.log(res);
+            })
+            .catch(function (error) {
+              console.log('发送失败');
+            });
+        }
+      });
+    }
   },
-
 }
 </script>
 
